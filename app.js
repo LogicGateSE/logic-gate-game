@@ -7,6 +7,8 @@ var terminals = [];
 var inputs = [];
 var output = null;
 
+var on_finish = [];
+
 const State = Object.freeze({
   ON: true,
   OFF: false
@@ -19,6 +21,11 @@ class Terminal {
     this.dom_element = e;
     terminals.push(this);
   }
+
+  remove(){
+    var index = terminals.indexOf(this);
+    terminals.splice(index, 1);
+  }
 }
 
 class Wire {
@@ -27,6 +34,17 @@ class Wire {
     this.terminal2 = terminal2;
     this.state = State.OFF;
     wires.push(this);
+  }
+
+  remove(){
+    if(!this.terminal1.is_source){
+      this.terminal1.state = State.OFF;
+    }
+    if(!this.terminal2.is_source){
+      this.terminal2.state = State.OFF;
+    }
+    var index = wires.indexOf(this);
+    wires.splice(index, 1);
   }
 }
 
@@ -37,12 +55,26 @@ class Gate{
     this.in2 = new Terminal();
     this.out = new Terminal();
     this.out.is_source = true;
+    this.dom_element = null;
     gates.push(this);
   }
 
   update(){
     this.out.state = this.func(this.in1.state, this.in2.state);
   }
+
+  setDomElement(e){
+    this.dom_element = e;
+  }
+
+  delete(){
+    getWiresFrom(this.in1).forEach(w => w.remove());
+    getWiresFrom(this.in2).forEach(w => w.remove());
+    getWiresFrom(this.out).forEach(w => w.remove());
+    var index = gates.indexOf(this);
+    gates.splice(index, 1);
+  }
+
 }
 
 last_state = ""
@@ -65,10 +97,24 @@ div.appendChild(canvas);
 
 var sline = document.getElementById("straight-line");
 
-$("#truthtable tr").click(function(){
-  var $tr = $(this);
-  console.log($tr.index());
+var clearTableBG = function(){
+  var $trs = $("#truthtable tr");
+  for(var i = 1; i < $trs.length; i++){
+    var $tr = $trs.eq(i);
+    $tr.css("background-color", "");
+  }
+}
 
+var resetFinished = function(){
+  finished = false;
+  stable_count = 0;
+}
+
+$("#truthtable tr").click(function(){
+  clearTableBG();
+  resetFinished();
+  $(this).css("background-color", "yellow");
+  var $tr = $(this);
   var s1 = $tr.find("td").eq(0).text();
   var s2 = $tr.find("td").eq(1).text();
   var s3 = $tr.find("td").eq(2).text();
@@ -83,13 +129,16 @@ $("#truthtable tr").click(function(){
       input.state = State.OFF;
     }
   }
-  console.log(s1, s2, s3, s4);
 });
 
 $("#checkall").click(async function(){
+  clearTableBG();
+  resetFinished();
+  this.disabled = true;
   var $trs = $("#truthtable tr");
   for(var i = 1; i < $trs.length; i++){
     var $tr = $trs.eq(i);
+    $tr.css("background-color", "yellow");
     var s1 = $tr.find("td").eq(0).text();
     var s2 = $tr.find("td").eq(1).text();
     var s3 = $tr.find("td").eq(2).text();
@@ -107,9 +156,13 @@ $("#checkall").click(async function(){
     finished = false;
     stable_count = 0;
 
-    while(!finished){
-      await new Promise(r => setTimeout(r, 100));
-    }
+    // while(!finished){
+    //   await new Promise(r => setTimeout(r, 100));
+    // }
+
+    await new Promise(r => {
+      on_finish.push(r);
+    });
 
     console.log(output)
 
@@ -120,8 +173,8 @@ $("#checkall").click(async function(){
     }else{
       $tr.css("background-color", "red");
     }
-
   }
+  this.disabled = false;
 });
 
 function NewAndGate(){
@@ -145,6 +198,11 @@ function NewNullGate(){
   return gate;
 }
 
+function NewNotGate(){
+  var gate = new Gate((a, b) => !a);
+  return gate;
+}
+
 function onHoverBoarder(e) {
   e.addEventListener("mouseover", function () {
     e.style.border = "1px solid white";
@@ -155,32 +213,43 @@ function onHoverBoarder(e) {
 }
 
 class Dragable{
-  constructor(e){
-    this.e = e;
+  constructor(gate){
+    this.e = gate.dom_element;
     this.isMouseDown = false;
     this.offsetX = 0;
     this.offsetY = 0;
 
-    e.addEventListener("mousedown", (event) => {
+    this.e.addEventListener("mousedown", (event) => {
       this.isMouseDown = true;
       this.offsetX = event.offsetX;
       this.offsetY = event.offsetY;
     });
-    e.addEventListener("mouseup", (event) => {
+    this.e.addEventListener("mouseup", (event) => {
       this.isMouseDown = false;
-      e.style.left = Math.round(parseInt(e.style.left) / 10) * 10 + "px";
+      this.e.style.left = Math.round(parseInt(this.e.style.left) / 10) * 10 + "px";
+      this.e.style.top = Math.round(parseInt(this.e.style.top) / 10) * 10 + "px";
     });
-    e.addEventListener("mousemove", (event) => {
+    this.e.addEventListener("mousemove", (event) => {
       if (this.isMouseDown) {
-        e.style.left = event.clientX - this.offsetX + "px";
-        e.style.top = event.clientY - this.offsetY + "px";
+        this.e.style.left = event.clientX - this.offsetX + "px";
+        this.e.style.top = event.clientY - this.offsetY + "px";
       }
     });
-    e.addEventListener("mouseout", (event) => {
+    this.e.addEventListener("mouseout", (event) => {
       this.isMouseDown = false;
-      e.style.left = Math.round(parseInt(e.style.left) / 10) * 10 + "px";
+      this.e.style.left = Math.round(parseInt(this.e.style.left) / 10) * 10 + "px";
     });
 }
+}
+
+class Removeable{
+  constructor(gate){
+    this.e = gate.dom_element;
+    this.e.addEventListener("dblclick", () => {
+      this.e.remove();
+      gate.delete();
+    });
+  }
 }
 
 function onClickFunction(e, func) {
@@ -229,6 +298,7 @@ function createAndGate(left, top) {
   gate.appendChild(terminal3);
 
   var _gate = NewAndGate();
+  _gate.setDomElement(gate);
   _gate.in1.dom_element = terminal1;
   _gate.in2.dom_element = terminal2;
   _gate.out.dom_element = terminal3;
@@ -246,10 +316,129 @@ function createAndGate(left, top) {
 
   div.appendChild(gate);
 
-  new Dragable(gate);
+  new Dragable(_gate);
+  new Removeable(_gate);
 
   return _gate;
 }
+
+function createOrGate(left, top) {
+  var gate = document.createElement("div");
+  gate.style.width = "50px";
+  gate.style.height = "50px";
+  gate.style.backgroundColor = "orange";
+  gate.style.position = "absolute";
+  gate.style.left = `${left}px`;
+  gate.style.top = `${top}px`;
+
+  gate.style.borderRadius = "0px 25px 25px 0px";
+
+  var terminal1 = document.createElement("div");
+  terminal1.style.width = "10px";
+  terminal1.style.height = "10px";
+  terminal1.style.backgroundColor = "black";
+  terminal1.style.position = "absolute";
+  terminal1.style.left = "0px";
+  terminal1.style.top = "10px";
+  onHoverBoarder(terminal1);
+  gate.appendChild(terminal1);
+
+  var terminal2 = document.createElement("div");
+  terminal2.style.width = "10px";
+  terminal2.style.height = "10px";
+  terminal2.style.backgroundColor = "black";
+  terminal2.style.position = "absolute";
+  terminal2.style.left = "0px";
+  terminal2.style.bottom = "10px";
+  onHoverBoarder(terminal2);
+  gate.appendChild(terminal2);
+
+  var terminal3 = document.createElement("div");
+  terminal3.style.width = "10px";
+  terminal3.style.height = "10px";
+  terminal3.style.backgroundColor = "black";
+  terminal3.style.position = "absolute";
+  terminal3.style.right = "0px";
+  terminal3.style.top = "20px";
+  onHoverBoarder(terminal3);
+  gate.appendChild(terminal3);
+
+  var _gate = NewOrGate();
+  _gate.setDomElement(gate);
+  _gate.in1.dom_element = terminal1;
+  _gate.in2.dom_element = terminal2;
+  _gate.out.dom_element = terminal3;
+  _gate.out.is_source = true;
+
+  terminal1.addEventListener("click", function(){
+    makeConnection(_gate.in1);
+  });
+  terminal2.addEventListener("click", function(){
+    makeConnection(_gate.in2);
+  });
+  terminal3.addEventListener("click", function(){
+    makeConnection(_gate.out);
+  });
+
+  div.appendChild(gate);
+
+  new Dragable(_gate);
+  new Removeable(_gate);
+
+  return _gate;
+}
+
+function createNotGate(left, top) {
+  var gate = document.createElement("div");
+  gate.style.width = "50px";
+  gate.style.height = "50px";
+  gate.style.backgroundColor = "yellow";
+  gate.style.position = "absolute";
+  gate.style.left = `${left}px`;
+  gate.style.top = `${top}px`;
+  gate.style.borderRadius = "0px 25px 25px 0px";
+
+  var terminal1 = document.createElement("div");
+  terminal1.style.width = "10px";
+  terminal1.style.height = "10px";
+  terminal1.style.backgroundColor = "black";
+  terminal1.style.position = "absolute";
+  terminal1.style.left = "0px";
+  terminal1.style.top = "20px";
+  onHoverBoarder(terminal1);
+  gate.appendChild(terminal1);
+
+  var terminal2 = document.createElement("div");
+  terminal2.style.width = "10px";
+  terminal2.style.height = "10px";
+  terminal2.style.backgroundColor = "black";
+  terminal2.style.position = "absolute";
+  terminal2.style.right = "0px";
+  terminal2.style.top = "20px";
+  onHoverBoarder(terminal2);
+  gate.appendChild(terminal2);
+
+  var _gate = NewNotGate();
+  _gate.setDomElement(gate);
+  _gate.in1.dom_element = terminal1;
+  _gate.out.dom_element = terminal2;
+  _gate.out.is_source = true;
+
+  terminal1.addEventListener("click", function(){
+    makeConnection(_gate.in1);
+  });
+  terminal2.addEventListener("click", function(){
+    makeConnection(_gate.out);
+  });
+
+  div.appendChild(gate);
+
+  new Dragable(_gate);
+  new Removeable(_gate);
+
+  return _gate;
+}
+
 
 function createSwitch(left, top) {
   var gate = document.createElement("div");
@@ -271,6 +460,7 @@ function createSwitch(left, top) {
   gate.appendChild(terminal1);
 
   var _gate = NewNullGate();
+  _gate.setDomElement(gate);
   _gate.out.dom_element = terminal1;
   _gate.out.is_source = true;
 
@@ -286,7 +476,9 @@ function createSwitch(left, top) {
 
   inputs.push(_gate.out);
 
-  new Dragable(gate);
+  new Dragable(_gate);
+  new Removeable(_gate);
+
   return _gate;
 }
 
@@ -310,6 +502,7 @@ function createOutput(left, top) {
   gate.appendChild(terminal1);
 
   var _gate = NewNullGate();
+  _gate.setDomElement(gate);
   _gate.in1.dom_element = terminal1;
 
   terminal1.addEventListener("click", function(){
@@ -318,17 +511,54 @@ function createOutput(left, top) {
 
   div.appendChild(gate);
 
-  new Dragable(gate);
+  new Dragable(_gate);
+  new Removeable(_gate);
+
   return _gate;
+}
+
+function getWiresFrom(t){
+  var result = [];
+  for(var i = 0; i < wires.length; i++){
+    var wire = wires[i];
+    if(wire.terminal1 === t || wire.terminal2 === t){
+      result.push(wire);
+    }
+  }
+  return result;
+}
+
+function getWiresBetween(t1, t2){
+  var result = [];
+  for(var i = 0; i < wires.length; i++){
+    var wire = wires[i];
+    if((wire.terminal1 === t1 && wire.terminal2 === t2) || (wire.terminal1 === t2 && wire.terminal2 === t1)){
+      result.push(wire);
+    }
+  }
+  console.log(result);
+  return result;
+}
+
+function deleteWires(wires_to_remove){
+  for(var i = 0; i < wires_to_remove.length; i++){
+    wires_to_remove[i].remove();
+  }
 }
 
 var previousTerminal = null;
 function makeConnection(terminal) {
   console.log("makeConnection");
+  if (terminal === previousTerminal) { return; }
   if (previousTerminal === null) {
     previousTerminal = terminal;
   } else {
-    var wire = new Wire(previousTerminal, terminal);
+    var existingWires = getWiresBetween(previousTerminal, terminal);
+    if(existingWires.length > 0){
+      deleteWires(existingWires);
+    }else{
+      new Wire(previousTerminal, terminal);
+    }
     previousTerminal = null;
   }
 }
@@ -445,7 +675,11 @@ function checkFinished(){
     stable_count = 0;
     last_state = temp;
   }
-  if(stable_count > 3){
+  if(stable_count == 3){
+    on_finish.forEach(f => f());
+    on_finish = [];
+  }
+  if(stable_count >= 3){
     finished = true;
   }else{
     finished = false;
@@ -482,7 +716,7 @@ makeConnection(and2.out);
 makeConnection(and3.in2);
 
 
-// add two buttons
+
 var button = document.createElement("button");
 button.innerHTML = "AND";
 button.style.position = "absolute";
@@ -511,35 +745,61 @@ button.addEventListener("click", function(){
   createSwitch(150, 200);
 });
 
-// 
-function tick() {
+var button = document.createElement("button");
+button.innerHTML = "OR";
+button.style.position = "absolute";
+button.style.left = "130px";
+button.style.top = "10px";
+button.style.width = "50px";
+button.style.height = "30px";
+button.style.backgroundColor = "blue";
+div.appendChild(button);
+
+button.addEventListener("click", function(){
+  createOrGate(150, 200);
+});
+
+var button = document.createElement("button");
+button.innerHTML = "NOT";
+button.style.position = "absolute";
+button.style.left = "190px";
+button.style.top = "10px";
+button.style.width = "50px";
+button.style.height = "30px";
+button.style.backgroundColor = "blue";
+div.appendChild(button);
+
+button.addEventListener("click", function(){
+  createNotGate(150, 200);
+});
+
+function vitualTick(){
   drawWires();
   updateTerminalsColor();
+  requestAnimationFrame(vitualTick);
+}
 
+// 
+function tick() {
   updateGates();
   updateWires();
   updateWireOutput();
   checkFinished();
 }
 
+requestAnimationFrame(vitualTick);
 
-var tick_task = setInterval(tick, 1000 / 10); // 30 fps
+var tick_task = setInterval(tick, 1000 / 60); // 30 fps
 
 // <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
 
-var slider = document.createElement("input");
-slider.type = "range";
-slider.min = "1";
-slider.max = "100";
-slider.value = "50";
-slider.style.position = "absolute";
-slider.style.left = "10px";
-slider.style.top = "400px";
-slider.style.width = "100px";
-slider.style.height = "30px";
-div.appendChild(slider);
-
-slider.addEventListener("input", function(){
+var speed_slider = document.getElementById("speed-slider");
+var speed_label = document.getElementById("speed-label");
+var speed_onchange = function(){
   clearInterval(tick_task);
-  tick_task = setInterval(tick, 1000 / slider.value);
-});
+  var tps = Math.pow(speed_slider.value / 10, 2);
+  speed_label.innerHTML = `Speed: ${Math.round(tps, 1)} tps`;
+  tick_task = setInterval(tick, 1000 / tps);
+}
+speed_slider.addEventListener("mouseup", speed_onchange);
+speed_onchange();

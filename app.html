@@ -42,7 +42,7 @@
         <td>0</td>
         <td>1</td>
         <td>1</td>
-        <td>1</td>
+        <td>0</td>
       </tr>
       <tr>
         <td>1</td>
@@ -53,7 +53,12 @@
       </tr>
     </table>
     <button id="checkall"> Check All </button>
-    <input type="checkbox" id="straight-line" /> 
+
+    <section id="settings">
+    <h3>Settings</h3>
+    <input type="checkbox" id="straight-line" /><span> Draw Zigzag</span><br/>
+    <span>Speed:</span><input type="range" id="speed-slider" min="10" max="300" value="100" /> <span id="speed-label"></span>
+    </section>
   </body>
 
   <style>
