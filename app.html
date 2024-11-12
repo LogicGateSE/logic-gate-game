@@ -6,7 +6,14 @@
     <title>Document</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div id="gate-deck"">
+        <button id="add-and" class="add_gate">AND</button>
+        <button id="add-or" class="add_gate">OR</button>
+        <button id="add-not" class="add_gate">NOT</button>
+        <button id="add-switch" class="add_gate">SWITCH</button>
+      </div>
+    </div>
     <!-- input checkbox id straigth line -->
     <table id="truthtable">
       <tr>
@@ -61,7 +68,31 @@
     </section>
   </body>
 
+  <!-- button.innerHTML = "AND";
+  button.style.position = "absolute";
+  button.style.left = "10px";
+  button.style.top = "10px";
+  button.style.width = "50px";
+  button.style.height = "30px";
+  button.style.backgroundColor = "blue";
+  button.style.color = "white"; -->
+
   <style>
+    .add_gate {
+      position: relative;
+      left: 10px;
+      top: 10px;
+      background-color: blue;
+      color: white;
+    }
+
+    #gate-deck {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      z-index: 999;
+    }
+
     th,td {
       padding: 3px 15px;
       text-align: left;

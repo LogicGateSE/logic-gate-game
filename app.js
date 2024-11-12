@@ -717,60 +717,25 @@ makeConnection(and3.in2);
 
 
 
-var button = document.createElement("button");
-button.innerHTML = "AND";
-button.style.position = "absolute";
-button.style.left = "10px";
-button.style.top = "10px";
-button.style.width = "50px";
-button.style.height = "30px";
-button.style.backgroundColor = "blue";
-div.appendChild(button);
+var add_and_button = document.getElementById("add-and");
+var add_or_button = document.getElementById("add-or");
+var add_not_button = document.getElementById("add-not");
+var add_switch_button = document.getElementById("add-switch");
 
-button.addEventListener("click", function(){
-  createAndGate(150, 200);
+add_and_button.addEventListener("click", function(){
+  createAndGate(150, 100);
 });
 
-var button = document.createElement("button");
-button.innerHTML = "SWITCH";
-button.style.position = "absolute";
-button.style.left = "70px";
-button.style.top = "10px";
-button.style.width = "50px";
-button.style.height = "30px";
-button.style.backgroundColor = "blue";
-div.appendChild(button);
-
-button.addEventListener("click", function(){
-  createSwitch(150, 200);
+add_or_button.addEventListener("click", function(){
+  createOrGate(150, 100);
 });
 
-var button = document.createElement("button");
-button.innerHTML = "OR";
-button.style.position = "absolute";
-button.style.left = "130px";
-button.style.top = "10px";
-button.style.width = "50px";
-button.style.height = "30px";
-button.style.backgroundColor = "blue";
-div.appendChild(button);
-
-button.addEventListener("click", function(){
-  createOrGate(150, 200);
+add_not_button.addEventListener("click", function(){
+  createNotGate(150, 100);
 });
 
-var button = document.createElement("button");
-button.innerHTML = "NOT";
-button.style.position = "absolute";
-button.style.left = "190px";
-button.style.top = "10px";
-button.style.width = "50px";
-button.style.height = "30px";
-button.style.backgroundColor = "blue";
-div.appendChild(button);
-
-button.addEventListener("click", function(){
-  createNotGate(150, 200);
+add_switch_button.addEventListener("click", function(){
+  createSwitch(150, 100);
 });
 
 function vitualTick(){
