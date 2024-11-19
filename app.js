@@ -220,6 +220,7 @@ class Dragable{
     this.offsetY = 0;
 
     this.e.addEventListener("mousedown", (event) => {
+      event.preventDefault();
       this.isMouseDown = true;
       this.offsetX = event.offsetX;
       this.offsetY = event.offsetY;
