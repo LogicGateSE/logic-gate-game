@@ -116,3 +116,73 @@
 
   <script src="game.js"></script>
 </html>
+import React from 'react';
+
+const LogicGateGame = () => {
+  return (
+    <div id="app">
+      <div id="gate-deck">
+        <button id="add-and" className="add_gate">AND</button>
+        <button id="add-or" className="add_gate">OR</button>
+        <button id="add-not" className="add_gate">NOT</button>
+        <button id="add-switch" className="add_gate">SWITCH</button>
+      </div>
+      <table id="truthtable">
+        <thead>
+          <tr>
+            <th>S1</th>
+            <th>S2</th>
+            <th>S3</th>
+            <th>S4</th>
+            <th>Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+          </tr>
+        </tbody>
+      </table>
+      <button id="checkall">Check All</button>
+      <section id="settings">
+        <h3>Settings</h3>
+        <input type="checkbox" id="straight-line" /><span> Draw Zigzag</span><br />
+        <span>Speed:</span><input type="range" id="speed-slider" min="10" max="300" defaultValue="100" /> <span id="speed-label"></span>
+      </section>
+    </div>
+  );
+};
+
+export default LogicGateGame;

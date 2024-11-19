@@ -1,7 +1,19 @@
-function App() {
+import { createRoot } from 'react-dom/client';
+import LogicGateLevel from './level';
+
+function App(props) {
 
   const handleStart = () => {
-    window.location.href = 'game.html';
+    // add component to the DOM
+
+    let testChallenge = {
+      inputCount: 2,
+      outputCount: 1,
+      text: "Add an OR gate"
+    };
+
+    props.root.render(<LogicGateLevel root={props.root} challenge={testChallenge}/>);
+    
   };
 
   const handleSettings = () => {};
