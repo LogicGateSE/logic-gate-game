@@ -1,30 +1,11 @@
 import LogicGateLevel from './logicgate_level';
+import Levels from './level_list';
 
 function App(props) {
+  //   props.root.render(<LogicGateLevel root={props.root} challenge={latchExample}/>);
 
   const handleStart = () => {
-    let latchExample = {
-      inputs: [
-        "S",
-        "R"
-      ],
-      outputs: [
-        "Q",
-        "Q'"
-      ],
-      text: "Make a latch",
-      testCasesGen: ()=>{
-        return [
-          {inputs: [0, 1], outputs: [1, 0]},
-          {inputs: [0, 0], outputs: [1, 0]},
-          {inputs: [1, 0], outputs: [0, 1]},
-          {inputs: [0, 0], outputs: [0, 1]},
-          {inputs: [1, 1], outputs: [0, 0]},
-          ];
-      }
-    };
-
-    props.root.render(<LogicGateLevel root={props.root} challenge={latchExample}/>);    
+    props.root.render(<Levels root={props.root} />);
   };
 
   const handleSettings = () => {};
