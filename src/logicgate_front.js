@@ -10,7 +10,6 @@ import logicGateDefaultTemplate from "./logicgate_template.js";
 import $ from "jquery"
 import 'jquery-ui/ui/widgets/draggable';
 
-
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const loadTemplate = () => {

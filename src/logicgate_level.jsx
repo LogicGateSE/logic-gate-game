@@ -7,11 +7,25 @@ export default function LogicGateLevel(props) {
   let resultMessage = React.createRef();
   let logicCanvas = null;
   let world = null;
+  let inputs = props.challenge.inputs;
+  let outputs = props.challenge.outputs;
+
+  console.log("Inputs: ", inputs);
+  console.log("Outputs: ", outputs);
 
   // run after loaded
   React.useEffect(() => {
     logicCanvas = logicGateComp.current.logicCanvas;
     world = logicCanvas.world;
+    inputs.forEach((input) => {
+      let gate = logicCanvas.createInput();
+      gate.setLabel(input);
+    });
+    outputs.forEach((output) => {
+      let gate = logicCanvas.createOutput();
+      gate.setLabel(output);
+    });
+    logicCanvas.showWireFrame();
   }, []);
 
   const handleBack = () => {
@@ -26,7 +40,7 @@ export default function LogicGateLevel(props) {
   };
 
   const handleSubmit = async (animated) => {
-    console.log("Submitting", animated);
+    resultMessage.current.innerText = "Evaluating...";
     let testCases = props.challenge.testCasesGen();
     let result = {
       correct: true,
@@ -64,6 +78,7 @@ export default function LogicGateLevel(props) {
       }
     }
     resultMessage.current.innerText = result.message;
+    resultMessage.current.innerText += world.numGate;
   }
 
 
@@ -72,11 +87,7 @@ export default function LogicGateLevel(props) {
     <div>
       <h1>Logic Gate Level</h1>
       <button onClick={handleBack}>Back</button>
-      <LogicGateComponent
-        ref={logicGateComp}
-        inputCount={props.challenge.inputCount}
-        outputCount={props.challenge.outputCount}
-      ></LogicGateComponent>
+      <LogicGateComponent ref={logicGateComp}></LogicGateComponent>
       <button onClick={() => handleAddGate("OR")}>OR</button>
       <button onClick={() => handleAddGate("AND")}>AND</button>
       <button onClick={() => handleAddGate("NOT")}>NOT</button>

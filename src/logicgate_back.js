@@ -284,6 +284,10 @@ class World {
     this.eventManager.publish("WORLD_CREATED", this);
   }
 
+  get numGate(){
+    return this.gates.length - this.inputs.length - this.outputs.length;
+  }
+
   setDomElement(domElement) {
     this.domElement = domElement;
     this.eventManager.publish("WORLD_DOM_SET", this);
@@ -305,7 +309,7 @@ class World {
     if(inputs){
       this.setInputsState(inputs);
     }
-    if (instant) {
+    if(instant) {
       this.notifyInstability();
       while (!this.isStable()){
         this.tick();
