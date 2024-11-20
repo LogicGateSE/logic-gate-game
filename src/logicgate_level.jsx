@@ -25,7 +25,8 @@ export default function LogicGateLevel(props) {
     logicCanvas.showWireFrame();
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (animated) => {
+    console.log("Submitting", animated);
     let testCases = props.challenge.testCasesGen();
     let result = {
       correct: true,
@@ -35,7 +36,10 @@ export default function LogicGateLevel(props) {
     for(let i=0; i<testCases.length; i++) {
       let inputs = testCases[i].inputs;
       let outputs = testCases[i].outputs;
-      let actualOutputs = await world.evaluate(inputs, true)
+      let actualOutputs = await world.evaluate(
+        inputs,
+        animated? undefined: true
+      );
 
       outputs = outputs.map((x) => x ? 1 : 0);
       actualOutputs = actualOutputs.map((x) => x ? 1 : 0);
@@ -78,7 +82,8 @@ export default function LogicGateLevel(props) {
       <button onClick={() => handleAddGate("NOT")}>NOT</button>
       <button onClick={() => handleAddGate("XOR")}>XOR</button>
       <p>{props.challenge.text}</p>
-      <button onClick={handleSubmit}>Submit</button>
+      <button onClick={() => handleSubmit(false)}>Submit</button>
+      <button onClick={() => handleSubmit(true)}>Submit Animated</button>
       <p ref={resultMessage}></p>
     </div>
   );
