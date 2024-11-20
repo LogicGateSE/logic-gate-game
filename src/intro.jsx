@@ -1,4 +1,3 @@
-import { createRoot } from 'react-dom/client';
 import LogicGateLevel from './logicgate_level';
 
 function App(props) {
@@ -7,7 +6,15 @@ function App(props) {
     let testChallenge = {
       inputCount: 2,
       outputCount: 1,
-      text: "Add an OR gate"
+      text: "Add an OR gate",
+      testCasesGen: ()=>{
+        return [
+          {inputs: [0, 0], outputs: [0]},
+          {inputs: [0, 1], outputs: [1]},
+          {inputs: [1, 0], outputs: [1]},
+          {inputs: [1, 1], outputs: [1]}
+        ]
+      }
     };
 
     props.root.render(<LogicGateLevel root={props.root} challenge={testChallenge}/>);    
