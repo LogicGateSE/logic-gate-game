@@ -1,8 +1,5 @@
 import {
   LogicGateFunctionSpec,
-  Gate,
-  Terminal,
-  Wire,
   World,
   FundamentalGate,
   State,
@@ -10,9 +7,9 @@ import {
   functionSpecOUT
 } from "./logicgate_back.js";
 import logicGateDefaultTemplate from "./logicgate_template.js";
-
 import $ from "jquery"
 import 'jquery-ui/ui/widgets/draggable';
+
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -172,7 +169,6 @@ class LogicCanvas {
       sinkPos.left += jqTerminal2.width() / 2;
 
       let xMid = (srcPos.left + sinkPos.left) / 2;
-      let yMid = (srcPos.top + sinkPos.top) / 2;
 
       ctx.beginPath();
       ctx.strokeStyle = wire.state === State.ON ? "white" : "black";
@@ -258,7 +254,7 @@ class LogicCanvas {
     ctx.fillStyle = this.world.isStable() ? "#4f4" : "#f44";
     ctx.fillRect(0, 0, 10, 10);
 
-    ctx.fillStyle = this.world.tickCount % 2 == 0 ? "#fff" : "#ccc";
+    ctx.fillStyle = this.world.tickCount % 2 === 0 ? "#fff" : "#ccc";
     ctx.fillRect(10, 0, 10, 10);
 
     ctx.fillStyle = this.world.previousTerminal ? "#fff" : "#ccc";
@@ -271,8 +267,8 @@ class LogicCanvas {
   createGateElement(template, functionSpec, x, y, draggable, removeable) {
     x = x || 100;
     y = y || 100;
-    draggable = draggable == undefined ? true : draggable;
-    removeable = removeable == undefined ? true : removeable;
+    draggable = draggable === undefined ? true : draggable;
+    removeable = removeable === undefined ? true : removeable;
     let clone = template.cloneNode(true);
     $(clone).removeClass("logic-gate-div-relative");
     $(clone).addClass("logic-gate-div-absolute");
@@ -384,13 +380,11 @@ class LogicCanvas {
         $(wire.terminalSink.domElement).removeClass("logic-gate-terminal-connectable");
       });
     } else {
-      {
-        this.world.terminals.forEach(terminal => {
-          let jqTerminal = $(terminal.domElement);
-          jqTerminal.removeClass("logic-gate-terminal-connectable");
-          jqTerminal.removeClass("logic-gate-terminal-removeable");
-        });
-      }
+      this.world.terminals.forEach(terminal => {
+        let jqTerminal = $(terminal.domElement);
+        jqTerminal.removeClass("logic-gate-terminal-connectable");
+        jqTerminal.removeClass("logic-gate-terminal-removeable");
+      });
     }
   }
 
