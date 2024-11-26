@@ -322,6 +322,17 @@ class World {
     return results;
   }
 
+  evaluateSync(inputs) {
+    this.setInputsState(inputs);
+    this.notifyInstability();
+    while (!this.isStable()){
+      this.tick();
+    };
+    let results = this.outputs.map(g => g.in(0).state)
+    this.eventManager.publish("WORLD_RESULT", { inputs: inputs, results: results });
+    return results;
+  }
+
   notifyInstability() {
     this.instableCount++;
     this.stableCount = 0;
