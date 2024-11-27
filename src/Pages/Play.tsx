@@ -65,6 +65,9 @@ export default function Play(_) {
     };
 
     const handleSubmit = async (animated) => {
+        let logicCanvas = logicGateComp.current.logicCanvas;
+        let world = logicCanvas.world;
+
         resultMessage.current.innerText = "Evaluating...";
         let testCases = levelData.TruthTable();
         let result = {
@@ -103,7 +106,6 @@ export default function Play(_) {
             }
         }
         resultMessage.current.innerText = result.message;
-        resultMessage.current.innerText += world.numGate;
 
         setCorrectAnswer(result.correct);
         setSolution(logicCanvas.world);
@@ -115,7 +117,9 @@ export default function Play(_) {
 
 
     return (
-        <Grid container direction={"column"} spacing={3}>
+        <Grid container direction="column" spacing={3}
+        alignItems="center"
+        justifyContent="center">
             <Grid item>
                 <CustomTypography large bold>Logic Gate Level</CustomTypography>
             </Grid>

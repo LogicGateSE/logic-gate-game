@@ -8,8 +8,8 @@ import {
 } from "../LevelInterfaces";
 import React, { PropsWithChildren } from "react";
 
-export default class LevelAnd implements LevelData {
-  readonly inputs: Array<string> = ["IN 1", "IN 2"];
+export default class LevelNot implements LevelData {
+  readonly inputs: Array<string> = ["IN"];
 
   private starOne(_: TSSolution): boolean {
     return true;
@@ -23,10 +23,10 @@ export default class LevelAnd implements LevelData {
     return timeElapsed < 120;
   }
 
-  readonly levelID: string = "And";
-  readonly levelName: string = "AND";
+  readonly levelID: string = "Not";
+  readonly levelName: string = "NOT";
   readonly levelTask: React.FC<React.PropsWithChildren> | string =
-    "Use an AND gate to connect the inputs to the output.";
+    "Use a NOT gate to invert the input.";
   readonly outputs: Array<string> = ["OUT"];
   readonly starRequirements: Array<StarRequirement>;
 
@@ -41,10 +41,8 @@ export default class LevelAnd implements LevelData {
   readonly truthTable: (() => Array<TruthTableRow>) | Array<TruthTableRow> =
     () => {
       return [
-        { inputs: [false, false], outputs: [false] },
-        { inputs: [false, true], outputs: [false] },
-        { inputs: [true, false], outputs: [false] },
-        { inputs: [true, true], outputs: [true] },
+        { inputs: [false], outputs: [true] },
+        { inputs: [true], outputs: [false] },
       ];
     };
 
@@ -68,24 +66,3 @@ export default class LevelAnd implements LevelData {
     return truthTableWrapper(this.truthTable);
   }
 }
-//
-// let level = {
-// 	inputs: [
-// 		"IN 1",
-// 		"IN 2"
-// 	],
-// 	outputs: [
-// 		"OUT"
-// 	],
-// 	text: "Use an AND gate to connect the inputs to the output",
-// 	testCasesGen: ()=>{
-// 		return [
-// 			{inputs: [0, 0], outputs: [0]},
-// 			{inputs: [0, 1], outputs: [0]},
-// 			{inputs: [1, 0], outputs: [0]},
-// 			{inputs: [1, 1], outputs: [1]}
-// 		];
-// 	}
-// };
-//
-// export default Level;

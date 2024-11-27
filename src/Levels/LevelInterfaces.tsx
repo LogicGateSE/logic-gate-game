@@ -1,5 +1,9 @@
 import LevelAnd from "./basic/and";
 import LevelNone from "./basic/none";
+import LevelOr from "./basic/or";
+import LevelNot from "./basic/not";
+import LevelLatch from "./others/latch";
+import LevelFullAdder from "./others/fulladder";
 
 import React, {PropsWithChildren} from "react";
 import {CustomTypography} from "../Components/CustomTypography";
@@ -60,13 +64,14 @@ let levels: Array<LevelCollection> = [
         name: "basic", levels: [
             new LevelNone,
             new LevelAnd,
-            // levelOr,
-            // levelNot
+            new LevelOr,
+            new LevelNot
         ]
     },
     {
         name: "others", levels: [
-            // new LevelLatch
+            new LevelLatch,
+            new LevelFullAdder
         ]
     }
 ]
