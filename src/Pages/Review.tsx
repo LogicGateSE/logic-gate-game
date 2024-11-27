@@ -2,7 +2,7 @@ import React, {useContext} from "react";
 import {Grid} from "@mui/material";
 import {CustomTypography} from "../Components/CustomTypography";
 import {SamaggiButton} from "../Components/SamaggiButton";
-import levels from "../Levels/LevelInterfaces";
+import levels from "../levels/LevelInterfaces";
 import {useLocation} from "react-router-dom";
 import {SolutionContext} from "../Main";
 import {useTypedNavigate} from "./Pages";

@@ -30,7 +30,7 @@ export default class Level implements LevelData {
   }
 
   get TruthTable(): (() => Array<TruthTableRow>) {
-    return truthTableWrapper()
+    return truthTableWrapper([])
   }
 
   levelComplete(world: TSSolution): boolean {

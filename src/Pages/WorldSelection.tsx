@@ -1,6 +1,6 @@
 import React from "react";
 import {CustomTypography} from "../Components/CustomTypography";
-import levels from "../Levels/LevelInterfaces";
+import levels from "../levels/LevelInterfaces";
 import {SamaggiButton} from "../Components/SamaggiButton";
 import {Grid} from "@mui/material";
 import {useTypedNavigate} from "./Pages";

@@ -1,4 +1,4 @@
-import LevelAnd from './basic/and';
+import LevelAnd from "./basic/and";
 import LevelNone from "./basic/none";
 
 import React, {PropsWithChildren} from "react";

@@ -1,4 +1,4 @@
-import levels from "../Levels/LevelInterfaces";
+import levels from "../levels/LevelInterfaces";
 import React from "react";
 import {SamaggiButton} from "../Components/SamaggiButton";
 import {CustomTypography} from "../Components/CustomTypography";

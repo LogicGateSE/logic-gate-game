@@ -1,6 +1,6 @@
 import LogicGateComponent from "../Components/LogicGateComponent";
 import React, {useContext} from "react";
-import levels from "../Levels/LevelInterfaces";
+import levels from "../levels/LevelInterfaces";
 import {useLocation} from "react-router-dom";
 import {useTypedNavigate} from "./Pages";
 import {CustomTypography} from "../Components/CustomTypography";
