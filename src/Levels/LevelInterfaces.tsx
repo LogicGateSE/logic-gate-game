@@ -1,4 +1,6 @@
-import {LevelAnd} from './basic/and';
+import LevelAnd from './basic/and';
+import LevelNone from "./basic/none";
+
 import React, {PropsWithChildren} from "react";
 import {CustomTypography} from "../Components/CustomTypography";
 
@@ -26,13 +28,15 @@ export function stringTaskWrapper(data: React.FC<PropsWithChildren> | string): R
     }
 }
 
-export function truthTableWrapper() {
-    if (typeof this.truthTable === "function"){
-        return this.truthTable;
+export function truthTableWrapper(data: (() => Array<TruthTableRow>) | Array<TruthTableRow>) {
+    if (typeof data === "function"){
+        return data;
     } else {
-        return (() => {return this.truthTable as Array<TruthTableRow>;});
+        return (() => {return data as Array<TruthTableRow>;});
     }
 }
+
+// TODO: Create function for default is correct check
 
 export interface LevelData {
     readonly starRequirements: Array<StarRequirement>;
@@ -43,7 +47,7 @@ export interface LevelData {
     readonly inputs: Array<string>;
     readonly outputs: Array<string>;
 
-    levelComplete(world: TSSolution): boolean;
+    levelComplete(solution: TSSolution): boolean;
 
     readonly LevelTask: React.FC<PropsWithChildren>;
     readonly TruthTable: (() => Array<TruthTableRow>);
@@ -54,7 +58,7 @@ type LevelCollection = {name: string, levels: Array<LevelData>}
 let levels: Array<LevelCollection> = [
     {
         name: "basic", levels: [
-            // levelNone,
+            new LevelNone,
             new LevelAnd,
             // levelOr,
             // levelNot

@@ -1,7 +1,14 @@
-import {LevelData, StarRequirement, stringTaskWrapper, TruthTableRow, TSSolution} from "../LevelInterfaces";
+import {
+	LevelData,
+	StarRequirement,
+	stringTaskWrapper,
+	TruthTableRow,
+	truthTableWrapper,
+	TSSolution
+} from "../LevelInterfaces";
 import React, {PropsWithChildren} from "react";
 
-export class LevelAnd implements LevelData {
+export default class LevelAnd implements LevelData {
 	readonly inputs: Array<string> = ["IN 1", "IN 2"];
 
 	private starOne(_: TSSolution): boolean {
@@ -56,11 +63,7 @@ export class LevelAnd implements LevelData {
 	}
 
 	get TruthTable(): (() => Array<TruthTableRow>) {
-		if (typeof this.truthTable === "function"){
-			return this.truthTable;
-		} else {
-			return (() => {return this.truthTable as Array<TruthTableRow>;});
-		}
+		return truthTableWrapper(this.truthTable);
 	}
 }
 //
