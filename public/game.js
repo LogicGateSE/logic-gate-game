@@ -1,13 +1,13 @@
 console.log("app.js loaded");
 
-var wires = [];
-var gates = [];
-var terminals = [];
+const wires = [];
+const gates = [];
+const terminals = [];
 
-var inputs = [];
-var output = null;
+const inputs = [];
+let output = null;
 
-var on_finish = [];
+let on_finish = [];
 
 const State = Object.freeze({
   ON: true,
@@ -77,9 +77,9 @@ class Gate{
 
 }
 
-last_state = ""
-stable_count = 0
-finished = false
+let last_state = ""
+let stable_count = 0
+let finished = false
 
 var div = document.getElementById("app");
 div.style.backgroundColor = "#aaa";
@@ -114,15 +114,15 @@ $("#truthtable tr").click(function(){
   clearTableBG();
   resetFinished();
   $(this).css("background-color", "yellow");
-  var $tr = $(this);
-  var s1 = $tr.find("td").eq(0).text();
-  var s2 = $tr.find("td").eq(1).text();
-  var s3 = $tr.find("td").eq(2).text();
-  var s4 = $tr.find("td").eq(3).text();
-  var states = [s1, s2, s3, s4];
+  const $tr = $(this);
+  const s1 = $tr.find("td").eq(0).text();
+  const s2 = $tr.find("td").eq(1).text();
+  const s3 = $tr.find("td").eq(2).text();
+  const s4 = $tr.find("td").eq(3).text();
+  const states = [s1, s2, s3, s4];
 
-  for(var i = 0; i < states.length; i++){
-    var input = inputs[i];
+  for(let i = 0; i < states.length; i++){
+    const input = inputs[i];
     if(states[i] === "1"){
       input.state = State.ON;
     }else{
@@ -135,21 +135,21 @@ $("#checkall").click(async function(){
   clearTableBG();
   resetFinished();
   this.disabled = true;
-  var $trs = $("#truthtable tr");
-  for(var i = 1; i < $trs.length; i++){
-    var $tr = $trs.eq(i);
+  const $trs = $("#truthtable tr");
+  for (let i = 1; i < $trs.length; i++) {
+    const $tr = $trs.eq(i);
     $tr.css("background-color", "yellow");
-    var s1 = $tr.find("td").eq(0).text();
-    var s2 = $tr.find("td").eq(1).text();
-    var s3 = $tr.find("td").eq(2).text();
-    var s4 = $tr.find("td").eq(3).text();
-    var states = [s1, s2, s3, s4];
+    const s1 = $tr.find("td").eq(0).text();
+    const s2 = $tr.find("td").eq(1).text();
+    const s3 = $tr.find("td").eq(2).text();
+    const s4 = $tr.find("td").eq(3).text();
+    const states = [s1, s2, s3, s4];
 
-    for(var j = 0; j < states.length; j++){
-      var input = inputs[j];
-      if(states[j] === "1"){
+    for (let j = 0; j < states.length; j++) {
+      const input = inputs[j];
+      if (states[j] === "1") {
         input.state = State.ON;
-      }else{
+      } else {
         input.state = State.OFF;
       }
     }
@@ -166,41 +166,42 @@ $("#checkall").click(async function(){
 
     console.log(output)
 
-    var expected_output = $tr.find("td").eq(4).text() === "1" ? State.ON : State.OFF;
-    var actual_output = output.in1.state;
-    if(actual_output === expected_output){
+    const expected_output = $tr.find("td").eq(4).text() === "1" ? State.ON : State.OFF;
+    const actual_output = output.in1.state;
+    if (actual_output === expected_output) {
       $tr.css("background-color", "green");
-    }else{
+    } else {
       $tr.css("background-color", "red");
     }
   }
   this.disabled = false;
 });
 
+// noinspection JSUnusedGlobalSymbols
 function NewAndGate(){
-  var gate = new Gate((a, b) => a && b);
-  return gate;
+  return new Gate((a, b) => a && b);
 }
 
+// noinspection JSUnusedGlobalSymbols
 function NewOrGate(){
-  var gate = new Gate((a, b) => a || b);
-  return gate;
+  return new Gate((a, b) => a || b);
 }
 
+// noinspection JSUnusedGlobalSymbols
 function NewXorGate(){
-  var gate = new Gate((a, b) => a !== b);
-  return gate;
+  return new Gate((a, b) => a !== b);
 }
 
+// noinspection JSUnusedGlobalSymbols
 function NewNullGate(){
-  var gate = new Gate((a, b) => false);
-  gate.func = (a, b) => gate.out.state;
+  const gate = new Gate((_, __) => false);
+  gate.func = (_, __) => gate.out.state;
   return gate;
 }
 
+// noinspection JSUnusedGlobalSymbols
 function NewNotGate(){
-  var gate = new Gate((a, b) => !a);
-  return gate;
+  return new Gate((a, _) => !a);
 }
 
 function onHoverBoarder(e) {
@@ -212,7 +213,7 @@ function onHoverBoarder(e) {
   });
 }
 
-class Dragable{
+class Draggable {
   constructor(gate){
     this.e = gate.dom_element;
     this.isMouseDown = false;
@@ -225,7 +226,7 @@ class Dragable{
       this.offsetX = event.offsetX;
       this.offsetY = event.offsetY;
     });
-    this.e.addEventListener("mouseup", (event) => {
+    this.e.addEventListener("mouseup", (_) => {
       this.isMouseDown = false;
       this.e.style.left = Math.round(parseInt(this.e.style.left) / 10) * 10 + "px";
       this.e.style.top = Math.round(parseInt(this.e.style.top) / 10) * 10 + "px";
@@ -236,14 +237,14 @@ class Dragable{
         this.e.style.top = event.clientY - this.offsetY + "px";
       }
     });
-    this.e.addEventListener("mouseout", (event) => {
+    this.e.addEventListener("mouseout", (_) => {
       this.isMouseDown = false;
       this.e.style.left = Math.round(parseInt(this.e.style.left) / 10) * 10 + "px";
     });
-}
+  }
 }
 
-class Removeable{
+class Removable {
   constructor(gate){
     this.e = gate.dom_element;
     this.e.addEventListener("dblclick", () => {
@@ -253,12 +254,13 @@ class Removeable{
   }
 }
 
+// noinspection JSUnusedGlobalSymbols
 function onClickFunction(e, func) {
   e.addEventListener("click", func);
 }
 
 function createAndGate(left, top) {
-  var gate = document.createElement("div");
+  const gate = document.createElement("div");
   gate.style.width = "50px";
   gate.style.height = "50px";
   gate.style.backgroundColor = "red";
@@ -268,7 +270,7 @@ function createAndGate(left, top) {
 
   gate.style.borderRadius = "0px 25px 25px 0px";
 
-  var terminal1 = document.createElement("div");
+  const terminal1 = document.createElement("div");
   terminal1.style.width = "10px";
   terminal1.style.height = "10px";
   terminal1.style.backgroundColor = "black";
@@ -278,7 +280,7 @@ function createAndGate(left, top) {
   onHoverBoarder(terminal1);
   gate.appendChild(terminal1);
 
-  var terminal2 = document.createElement("div");
+  const terminal2 = document.createElement("div");
   terminal2.style.width = "10px";
   terminal2.style.height = "10px";
   terminal2.style.backgroundColor = "black";
@@ -288,7 +290,7 @@ function createAndGate(left, top) {
   onHoverBoarder(terminal2);
   gate.appendChild(terminal2);
 
-  var terminal3 = document.createElement("div");
+  const terminal3 = document.createElement("div");
   terminal3.style.width = "10px";
   terminal3.style.height = "10px";
   terminal3.style.backgroundColor = "black";
@@ -298,7 +300,7 @@ function createAndGate(left, top) {
   onHoverBoarder(terminal3);
   gate.appendChild(terminal3);
 
-  var _gate = NewAndGate();
+  const _gate = NewAndGate();
   _gate.setDomElement(gate);
   _gate.in1.dom_element = terminal1;
   _gate.in2.dom_element = terminal2;
@@ -317,8 +319,8 @@ function createAndGate(left, top) {
 
   div.appendChild(gate);
 
-  new Dragable(_gate);
-  new Removeable(_gate);
+  new Draggable(_gate);
+  new Removable(_gate);
 
   return _gate;
 }
@@ -383,8 +385,8 @@ function createOrGate(left, top) {
 
   div.appendChild(gate);
 
-  new Dragable(_gate);
-  new Removeable(_gate);
+  new Draggable(_gate);
+  new Removable(_gate);
 
   return _gate;
 }
@@ -434,8 +436,8 @@ function createNotGate(left, top) {
 
   div.appendChild(gate);
 
-  new Dragable(_gate);
-  new Removeable(_gate);
+  new Draggable(_gate);
+  new Removable(_gate);
 
   return _gate;
 }
@@ -477,14 +479,14 @@ function createSwitch(left, top) {
 
   inputs.push(_gate.out);
 
-  new Dragable(_gate);
-  new Removeable(_gate);
+  new Draggable(_gate);
+  new Removable(_gate);
 
   return _gate;
 }
 
 function createOutput(left, top) {
-  var gate = document.createElement("div");
+  const gate = document.createElement("div");
   gate.style.width = "50px";
   gate.style.height = "50px";
   gate.style.backgroundColor = "#44f";
@@ -492,7 +494,7 @@ function createOutput(left, top) {
   gate.style.left = `${left}px`;
   gate.style.top = `${top}px`;
 
-  var terminal1 = document.createElement("div");
+  const terminal1 = document.createElement("div");
   terminal1.style.width = "10px";
   terminal1.style.height = "10px";
   terminal1.style.backgroundColor = "black";
@@ -502,7 +504,7 @@ function createOutput(left, top) {
   onHoverBoarder(terminal1);
   gate.appendChild(terminal1);
 
-  var _gate = NewNullGate();
+  const _gate = NewNullGate();
   _gate.setDomElement(gate);
   _gate.in1.dom_element = terminal1;
 
@@ -512,17 +514,17 @@ function createOutput(left, top) {
 
   div.appendChild(gate);
 
-  new Dragable(_gate);
-  new Removeable(_gate);
+  new Draggable(_gate);
+  new Removable(_gate);
 
   return _gate;
 }
 
 function getWiresFrom(t){
-  var result = [];
-  for(var i = 0; i < wires.length; i++){
-    var wire = wires[i];
-    if(wire.terminal1 === t || wire.terminal2 === t){
+  const result = [];
+  for(let i = 0; i < wires.length; i++){
+    const wire = wires[i];
+    if (wire.terminal1 === t || wire.terminal2 === t){
       result.push(wire);
     }
   }
@@ -530,9 +532,9 @@ function getWiresFrom(t){
 }
 
 function getWiresBetween(t1, t2){
-  var result = [];
-  for(var i = 0; i < wires.length; i++){
-    var wire = wires[i];
+  const result = [];
+  for(let i = 0; i < wires.length; i++){
+    const wire = wires[i];
     if((wire.terminal1 === t1 && wire.terminal2 === t2) || (wire.terminal1 === t2 && wire.terminal2 === t1)){
       result.push(wire);
     }
@@ -542,19 +544,19 @@ function getWiresBetween(t1, t2){
 }
 
 function deleteWires(wires_to_remove){
-  for(var i = 0; i < wires_to_remove.length; i++){
+  for(let i = 0; i < wires_to_remove.length; i++){
     wires_to_remove[i].remove();
   }
 }
 
-var previousTerminal = null;
+let previousTerminal = null;
 function makeConnection(terminal) {
   console.log("makeConnection");
   if (terminal === previousTerminal) { return; }
   if (previousTerminal === null) {
     previousTerminal = terminal;
   } else {
-    var existingWires = getWiresBetween(previousTerminal, terminal);
+    const existingWires = getWiresBetween(previousTerminal, terminal);
     if(existingWires.length > 0){
       deleteWires(existingWires);
     }else{
@@ -565,7 +567,7 @@ function makeConnection(terminal) {
 }
 
 function drawWires() {
-  var ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d");
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -579,13 +581,13 @@ function drawWires() {
 
 
   for (var i = 0; i < wires.length; i++) {
-    var wire = wires[i];
+    const wire = wires[i];
 
-    var jq_terminal1 = $(wire.terminal1.dom_element);
-    var jq_terminal2 = $(wire.terminal2.dom_element);
+    const jq_terminal1 = $(wire.terminal1.dom_element);
+    const jq_terminal2 = $(wire.terminal2.dom_element);
 
-    var position1 = jq_terminal1.offset()
-    var position2 = jq_terminal2.offset()
+    const position1 = jq_terminal1.offset()
+    const position2 = jq_terminal2.offset()
 
     position1.top -= jq_terminal1.height() / 2;
     position1.left -= jq_terminal1.width() / 2;
@@ -593,7 +595,7 @@ function drawWires() {
     position2.top -= jq_terminal2.height() / 2;
     position2.left -= jq_terminal2.width() / 2;
 
-    var x_mid = (position1.left + position2.left) / 2;
+    const x_mid = (position1.left + position2.left) / 2;
 
     ctx.beginPath();
     ctx.strokeStyle = wire.state === State.ON ? "white" : "black";
@@ -615,8 +617,8 @@ function drawWires() {
 }
 
 function updateTerminalsColor(){
-  for(var i = 0; i < terminals.length; i++){
-    var terminal = terminals[i];
+  for(let i = 0; i < terminals.length; i++){
+    const terminal = terminals[i];
     if (terminal.dom_element === undefined) {
       continue;
     }
@@ -629,17 +631,17 @@ function updateTerminalsColor(){
 }
 
 function updateGates(){
-  for(var i = 0; i < gates.length; i++){
-    var gate = gates[i];
+  for(let i = 0; i < gates.length; i++){
+    const gate = gates[i];
     gate.update();
   }
 }
 
 function updateWires(){
-  for(var i = 0; i < wires.length; i++){
-    var wire = wires[i];
-    var t1 = wire.terminal1;
-    var t2 = wire.terminal2;
+  for(let i = 0; i < wires.length; i++){
+    const wire = wires[i];
+    const t1 = wire.terminal1;
+    const t2 = wire.terminal2;
     wire.state = State.OFF;
     if(t1.is_source && t1.state === State.ON){
       wire.state = State.ON;
@@ -651,8 +653,8 @@ function updateWires(){
 }
 
 function updateWireOutput(){
-  for(var i = 0; i < wires.length; i++){
-    var wire = wires[i];
+  for(let i = 0; i < wires.length; i++){
+    const wire = wires[i];
     if(!wire.terminal1.is_source){
       wire.terminal1.state = wire.state;
     }
@@ -664,7 +666,7 @@ function updateWireOutput(){
 
 function checkFinished(){
   let temp = "";
-  for(var i = 0; i < terminals.length; i++){
+  for(let i = 0; i < terminals.length; i++){
     let t = terminals[i];
     if(t.is_source){
       temp += t.state ? "1" : "0";
@@ -676,25 +678,21 @@ function checkFinished(){
     stable_count = 0;
     last_state = temp;
   }
-  if(stable_count == 3){
+  if(stable_count === 3){
     on_finish.forEach(f => f());
     on_finish = [];
   }
-  if(stable_count >= 3){
-    finished = true;
-  }else{
-    finished = false;
-  }
+  finished = stable_count >= 3;
 }
 
-var and1 = createAndGate(150, 100);
-var and2 = createAndGate(150, 300);
-var and3 = createAndGate(300, 200);
+const and1 = createAndGate(150, 100);
+const and2 = createAndGate(150, 300);
+const and3 = createAndGate(300, 200);
 
-var switch1 = createSwitch(10, 50);
-var switch2 = createSwitch(10, 150);
-var switch3 = createSwitch(10, 250);
-var switch4 = createSwitch(10, 350);
+const switch1 = createSwitch(10, 50);
+const switch2 = createSwitch(10, 150);
+const switch3 = createSwitch(10, 250);
+const switch4 = createSwitch(10, 350);
 
 output = createOutput(450, 200);
 
@@ -718,10 +716,10 @@ makeConnection(and3.in2);
 
 
 
-var add_and_button = document.getElementById("add-and");
-var add_or_button = document.getElementById("add-or");
-var add_not_button = document.getElementById("add-not");
-var add_switch_button = document.getElementById("add-switch");
+const add_and_button = document.getElementById("add-and");
+const add_or_button = document.getElementById("add-or");
+const add_not_button = document.getElementById("add-not");
+const add_switch_button = document.getElementById("add-switch");
 
 add_and_button.addEventListener("click", function(){
   createAndGate(150, 100);
@@ -755,15 +753,15 @@ function tick() {
 
 requestAnimationFrame(vitualTick);
 
-var tick_task = setInterval(tick, 1000 / 60); // 30 fps
+let tick_task = setInterval(tick, 1000 / 60); // 30 fps
 
 // <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
 
-var speed_slider = document.getElementById("speed-slider");
-var speed_label = document.getElementById("speed-label");
-var speed_onchange = function(){
+const speed_slider = document.getElementById("speed-slider");
+const speed_label = document.getElementById("speed-label");
+const speed_onchange = function(){
   clearInterval(tick_task);
-  var tps = Math.pow(speed_slider.value / 10, 2);
+  const tps = Math.pow(speed_slider.value / 10, 2);
   speed_label.innerHTML = `Speed: ${Math.round(tps, 1)} tps`;
   tick_task = setInterval(tick, 1000 / tps);
 }

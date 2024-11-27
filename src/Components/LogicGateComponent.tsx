@@ -1,9 +1,11 @@
-import World from './logicgate_back.js';
-import LogicCanvas from './logicgate_front.js';
-import './logicgate.css'
+import Solution from '../logicgate_back.js';
+import LogicCanvas from '../logicgate_front.js';
+import '../logicgate.css'
 import React from 'react';
 
-class LogicGateComponent extends React.Component {
+class LogicGateComponent extends React.Component<{inputCount?: number, outputCount?: number, ref?: React.RefObject<any>}> {
+  logicCanvas: LogicCanvas;
+
   componentDidMount() {
     let logicDiv = document.getElementById("logic-canvas-here");
     logicDiv.id = "logic-canvas-here";
@@ -11,7 +13,7 @@ class LogicGateComponent extends React.Component {
     logicDiv.style.height = "300px"
 
     // Create the logic canvas
-    let mainWorld = new World();
+    let mainWorld = new Solution();
     let logicCanvas = new LogicCanvas(mainWorld, logicDiv);
     
     // Start the visual and world ticks
