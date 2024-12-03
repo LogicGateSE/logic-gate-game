@@ -4,3 +4,4 @@ node_modules
 # Mac-based developer specific files
 .DS_Store
 build
+package-lock.json

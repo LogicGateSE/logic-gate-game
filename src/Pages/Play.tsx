@@ -8,6 +8,8 @@ import {Grid} from "@mui/material";
 import {SamaggiButton} from "../Components/SamaggiButton";
 import SamaggiPaper from "../Components/SamaggiPaper";
 import {SolutionContext} from "../Main";
+import userData from "../UserData";
+
 
 export interface LogicGateLevelState {
     levelIndex: number;
@@ -40,8 +42,9 @@ export default function Play(_) {
     React.useEffect(() => {
         timeBegin = new Date();
 
-        logicCanvas = logicGateComp.current.logicCanvas;
-        world = logicCanvas.world;
+        let logicCanvas = logicGateComp.current.logicCanvas;
+        let world = logicCanvas.world; 
+        world.clear();
         inputs.forEach((input) => {
             let gate = logicCanvas.createInput();
             gate.setLabel(input);
@@ -50,6 +53,17 @@ export default function Play(_) {
             let gate = logicCanvas.createOutput();
             gate.setLabel(output);
         });
+
+        let userAttemptExport = userData.getAttempt(levelData.levelID);
+        console.log("User attempt: ", userAttemptExport);
+        if (userAttemptExport) {
+            setTimeout(() => {
+                logicCanvas.load(userAttemptExport);
+                console.log("Loaded user attempt");
+                logicCanvas.showWireFrame();
+            }, 500);
+        }
+
         logicCanvas.showWireFrame();
     }, [location]);
 
@@ -67,6 +81,8 @@ export default function Play(_) {
     const handleSubmit = async (animated) => {
         let logicCanvas = logicGateComp.current.logicCanvas;
         let world = logicCanvas.world;
+
+        userData.setAttempt(levelData.levelID, logicCanvas.export());
 
         resultMessage.current.innerText = "Evaluating...";
         let testCases = levelData.TruthTable();
@@ -117,18 +133,16 @@ export default function Play(_) {
 
 
     return (
-        <Grid container direction="column" spacing={3}
-        alignItems="center"
-        justifyContent="center">
+        <Grid container direction="column" spacing={3}>
             <Grid item>
-                <CustomTypography large bold>Logic Gate Level</CustomTypography>
+                <CustomTypography center large bold>Logic Gate Level</CustomTypography>
             </Grid>
-            <Grid item>
+            <Grid item sx={{width: "100%"}} justifyContent="center" alignItems="center">
                 <LogicGateComponent ref={logicGateComp}></LogicGateComponent>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
                 <LogicGateComponent ref={logicGateComp}></LogicGateComponent>
-            </Grid>
+            </Grid> */}
             <Grid item container direction={"row"} spacing={2}>
                 <Grid item xs={3}>
                     <SamaggiButton fullWidth onClick={() => handleAddGate("OR")}>OR</SamaggiButton>
@@ -149,7 +163,7 @@ export default function Play(_) {
                 </SamaggiPaper>
             </Grid>
             {!correctAnswer && <Grid item container direction={"column"}>
-                <Grid item container direction={"row"} spacing={2}>
+                <Grid item container direction={"row"} spacing={2} xs={12}>
                     <Grid item xs={6}>
                         <SamaggiButton fullWidth onClick={() => handleSubmit(false)}>Submit</SamaggiButton>
                     </Grid>
