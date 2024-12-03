@@ -680,9 +680,12 @@ class LogicCanvas {
 	}
 
 	load(data) {
-		this.domElement.style.width = data.canvasSize.width + "px";
-		this.domElement.style.height = data.canvasSize.height + "px";
+		// this.domElement.style.width = data.canvasSize.width + "px";
+		// this.domElement.style.height = data.canvasSize.height + "px";
 		this.updateCanvas();
+
+		let xScale = this.domElement.clientWidth / data.canvasSize.width;
+		let yScale = this.domElement.clientHeight / data.canvasSize.height;
 
 		this.clear();
 		let gates = {};
@@ -702,8 +705,8 @@ class LogicCanvas {
 				gates[gateData.id] = gate;
 				gates[gateData.id].setState(gateData.state);
 			} else if (FundamentalGate[gateData.type] !== undefined) {
-				let x = parseInt(gateData.x);
-				let y = parseInt(gateData.y);
+				let x = parseInt(gateData.x) * xScale;
+				let y = parseInt(gateData.y) * yScale;
 				if (gateData.isWorldInput) {
 					gates[gateData.id] = this.createInput();
 				} else if (gateData.isWorldOutput) {

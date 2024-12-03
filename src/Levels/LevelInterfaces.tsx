@@ -5,6 +5,11 @@ import LevelNot from "./basic/not";
 import LevelLatch from "./others/latch";
 import LevelFullAdder from "./others/fulladder";
 
+import LevelSmartHome1 from "./smart_home/smart_home1";
+import LevelSmartHome2 from "./smart_home/smart_home2";
+import LevelSmartHome3 from "./smart_home/smart_home3";
+
+
 import React, {PropsWithChildren} from "react";
 import {CustomTypography} from "../Components/CustomTypography";
 
@@ -66,6 +71,13 @@ let levels: Array<LevelCollection> = [
             new LevelAnd,
             new LevelOr,
             new LevelNot
+        ]
+    },
+    {
+        name: "smart_home", levels: [
+            new LevelSmartHome1,
+            new LevelSmartHome2,
+            new LevelSmartHome3
         ]
     },
     {

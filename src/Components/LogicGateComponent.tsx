@@ -9,8 +9,10 @@ class LogicGateComponent extends React.Component<{inputCount?: number, outputCou
   componentDidMount() {
     let logicDiv = document.getElementById("logic-canvas-here");
     logicDiv.id = "logic-canvas-here";
-    logicDiv.style.width = "500px"
-    logicDiv.style.height = "300px"
+    logicDiv.style.width = "700px"
+    logicDiv.style.height = "400px"
+    logicDiv.style.marginLeft = "auto";
+    logicDiv.style.marginRight = "auto";
 
     // Create the logic canvas
     let mainWorld = new Solution();

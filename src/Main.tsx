@@ -35,9 +35,11 @@ export const Main: React.FC<PropsWithChildren<any>> = () => {
 
     const contextState = useState<Solution>(undefined);
 
+    document.body.style.backgroundColor = "#c0c0c0";
+
     return (
         <SamaggiBackdrop open={false} noContainer={true}>
-            <div style={medScreen ? {zoom: "100%"} : {zoom: "50%"}}>
+            <div>
                 <Grid container direction={"column"} alignItems={"center"}>
                     <SamaggiPaper wide>
                         <Routes>

@@ -1,4 +1,3 @@
-
 class UserData {
     constructor() {
         this.data = {};
@@ -6,7 +5,17 @@ class UserData {
     }
 
     loadFromLocalStorage() {
-        this.data = JSON.parse(localStorage.getItem('userData')) || {};
+        try {
+            this.data = JSON.parse(localStorage.getItem('userData'));
+            console.log('Loaded user data from local storage', this.data);
+            if(typeof this.data !== 'object' || this.data === null) {
+                throw new Error('Invalid data in local storage');
+            }
+        }catch{
+            console.error('Error loading user data from local storage');
+            this.data = {};
+            this.saveToLocalStorage();
+        }
     }
 
     saveToLocalStorage() {
@@ -22,15 +31,28 @@ class UserData {
         return this.data[key];
     }
 
-    getAttempt(levelID) {
-        return this.data?.attempts?.[levelID];
+    hasAttempted(levelID) {
+        return this.data?.attempts?.hasOwnProperty(levelID);
     }
 
-    setAttempt(levelID, attempt) {
+    getAttempt(levelID, key) {
+        if (!this.data?.attempts) {
+            return undefined;
+        }
+        if (!this.data?.attempts[levelID]) {
+            return undefined;
+        }
+        return this.data.attempts[levelID][key];
+    }
+
+    setAttempt(levelID, key, value) {
         if (!this.data.attempts) {
             this.data.attempts = {};
         }
-        this.data.attempts[levelID] = attempt;
+        if (!this.data.attempts[levelID]) {
+            this.data.attempts[levelID] = {};
+        }
+        this.data.attempts[levelID][key] = value;
         this.saveToLocalStorage();
     }
 }

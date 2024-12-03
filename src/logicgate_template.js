@@ -48,6 +48,19 @@ let logicGateDefaultTemplate = `
     <div class="logic-gate-body"></div>
   </div>
 
+  <div class="logic-gate-div-relative logic-nand-template">
+    <span class="logic-gate-label">NAND</span>
+    <div class="logic-gate-input-terminal logic-gate-terminal-container">
+      <div class="logic-gate-terminal"></div>
+      <div class="logic-gate-terminal"></div>
+    </div>
+    <div class="logic-gate-output-terminal logic-gate-terminal-container">
+      <div class="logic-gate-terminal"></div>
+    </div>
+    <div class="logic-gate-body"></div>
+  </div>
+
+
   <div class="logic-gate-div-relative logic-in-template">
     <span class="logic-gate-label">IN</span>
     <div class="logic-gate-output-terminal logic-gate-terminal-container">

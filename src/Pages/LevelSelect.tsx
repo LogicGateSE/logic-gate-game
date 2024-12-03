@@ -5,6 +5,8 @@ import {CustomTypography} from "../Components/CustomTypography";
 import {useLocation} from "react-router-dom";
 import {Grid} from "@mui/material";
 import {useTypedNavigate} from "./Pages";
+import userData from "../UserData";
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 
 export interface LevelSelectState {
     worldIndex: number;
@@ -24,12 +26,12 @@ const LevelSelect: React.FC = (_) => {
                     <Grid item>
                         <SamaggiButton fullWidth onClick={() => {
                             navigate("/play", {state: {worldIndex: state.worldIndex, levelIndex: index}})}
-                        }> {level.levelID}: {level.levelName} </SamaggiButton>
+                        }> {level.levelID}: {level.levelName} {userData.hasAttempted(level.levelID)? "*":""} {userData.getAttempt(level.levelID, "stars")||""}</SamaggiButton>
                     </Grid>
                 ))}
             </Grid>
             <Grid item>
-                <SamaggiButton fullWidth colour={"#777777"} hoverColour={"#555555"} onClick={() => navigate("/world-select")}>Back</SamaggiButton>
+                <SamaggiButton fullWidth colour={"#777777"} hoverColour={"#555555"} onClick={() => navigate("/world-select")} startIcon={<KeyboardReturnIcon/>}>Back</SamaggiButton>
             </Grid>
         </Grid>
     );

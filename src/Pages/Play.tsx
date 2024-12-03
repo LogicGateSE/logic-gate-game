@@ -9,7 +9,8 @@ import {SamaggiButton} from "../Components/SamaggiButton";
 import SamaggiPaper from "../Components/SamaggiPaper";
 import {SolutionContext} from "../Main";
 import userData from "../UserData";
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 
 export interface LogicGateLevelState {
     levelIndex: number;
@@ -45,6 +46,7 @@ export default function Play(_) {
         let logicCanvas = logicGateComp.current.logicCanvas;
         let world = logicCanvas.world; 
         world.clear();
+
         inputs.forEach((input) => {
             let gate = logicCanvas.createInput();
             gate.setLabel(input);
@@ -54,14 +56,20 @@ export default function Play(_) {
             gate.setLabel(output);
         });
 
-        let userAttemptExport = userData.getAttempt(levelData.levelID);
-        console.log("User attempt: ", userAttemptExport);
-        if (userAttemptExport) {
+        let userAttemptCanvas = userData.getAttempt(levelData.levelID, "canvas");
+        console.log("User attempt: ", userAttemptCanvas);
+        if (userAttemptCanvas) {
             setTimeout(() => {
-                logicCanvas.load(userAttemptExport);
+                logicCanvas.load(userAttemptCanvas);
+                inputs.forEach((input, index) => {
+                    world.inputs[index].setLabel(input);
+                });
+                outputs.forEach((output, index) => {
+                    world.outputs[index].setLabel(output);
+                });
                 console.log("Loaded user attempt");
                 logicCanvas.showWireFrame();
-            }, 500);
+            }, 100);
         }
 
         logicCanvas.showWireFrame();
@@ -82,7 +90,7 @@ export default function Play(_) {
         let logicCanvas = logicGateComp.current.logicCanvas;
         let world = logicCanvas.world;
 
-        userData.setAttempt(levelData.levelID, logicCanvas.export());
+        userData.setAttempt(levelData.levelID, "canvas", logicCanvas.export());
 
         resultMessage.current.innerText = "Evaluating...";
         let testCases = levelData.TruthTable();
@@ -127,6 +135,12 @@ export default function Play(_) {
         setSolution(logicCanvas.world);
     }
 
+    const handleClear = () => {
+        let logicCanvas = logicGateComp.current.logicCanvas;
+        let world = logicCanvas.world;
+        world.clearNonIO();
+    }
+
     function goToReview() {
         navigate("/review", {state: {worldIndex: state.worldIndex, levelIndex: state.levelIndex, timeElapsed: ((new Date()).getTime() - timeBegin.getTime()) / 1000}});
     }
@@ -134,8 +148,11 @@ export default function Play(_) {
 
     return (
         <Grid container direction="column" spacing={3}>
+            <Grid item xs={1} position={"absolute"}>
+                <SamaggiButton onClick={handleBack} startIcon={<KeyboardReturnIcon/>}>BACK</SamaggiButton>
+            </Grid>
             <Grid item>
-                <CustomTypography center large bold>Logic Gate Level</CustomTypography>
+                <CustomTypography center large bold>Logic Gate Level: {levelData.levelName}</CustomTypography>
             </Grid>
             <Grid item sx={{width: "100%"}} justifyContent="center" alignItems="center">
                 <LogicGateComponent ref={logicGateComp}></LogicGateComponent>
@@ -143,22 +160,28 @@ export default function Play(_) {
             {/* <Grid item>
                 <LogicGateComponent ref={logicGateComp}></LogicGateComponent>
             </Grid> */}
-            <Grid item container direction={"row"} spacing={2}>
-                <Grid item xs={3}>
-                    <SamaggiButton fullWidth onClick={() => handleAddGate("OR")}>OR</SamaggiButton>
-                </Grid>
-                <Grid item xs={3}>
+            <Grid item container direction={"row"} spacing={2} style={{marginTop: "-8%"}}>
+                <Grid item xs={2}>
                     <SamaggiButton fullWidth onClick={() => handleAddGate("AND")}>AND</SamaggiButton>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
+                    <SamaggiButton fullWidth onClick={() => handleAddGate("OR")}>OR</SamaggiButton>
+                </Grid>
+                <Grid item xs={2}>
                     <SamaggiButton fullWidth onClick={() => handleAddGate("NOT")}>NOT</SamaggiButton>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <SamaggiButton fullWidth onClick={() => handleAddGate("XOR")}>XOR</SamaggiButton>
                 </Grid>
+                <Grid item xs={2}>
+                    <SamaggiButton fullWidth onClick={() => handleAddGate("NAND")}>NAND</SamaggiButton>
+                </Grid>
+                <Grid item xs={2}>
+                    <SamaggiButton fullWidth onClick={() => handleClear()} startIcon={<DeleteIcon />} style={{backgroundColor:"rgb(144, 202, 249)", color:"rgba(0, 0, 0, 0.87)"}}>Clear</SamaggiButton>
+                </Grid>
             </Grid>
-            <Grid item>
-                <SamaggiPaper>
+            <Grid item xs={12}>
+                <SamaggiPaper internal>
                     <levelData.LevelTask/>
                 </SamaggiPaper>
             </Grid>
@@ -178,9 +201,6 @@ export default function Play(_) {
             {correctAnswer && <Grid item>
                 <SamaggiButton fullWidth onClick={() => goToReview()}>View your Results</SamaggiButton>
             </Grid>}
-            <Grid item>
-                <SamaggiButton fullWidth onClick={handleBack}>Back</SamaggiButton>
-            </Grid>
         </Grid>
     );
 }

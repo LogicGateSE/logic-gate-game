@@ -16,7 +16,7 @@ const Intro: React.FC = (_)=> {
             <Grid item>
                 <CustomTypography bold xlarge center>Logic Gate Game</CustomTypography>
             </Grid>
-            <Grid item container direction={"column"} spacing={1}>
+            <Grid item container direction={"column"} spacing={2}>
                 <Grid item>
                     <SamaggiButton fullWidth onClick={() => {navigate("/world-select")}}>Start</SamaggiButton>
                 </Grid>

@@ -481,6 +481,14 @@ class Solution {
 		};
 	}
 
+	clearNonIO() {
+		this.gates.forEach(g => {
+			if (!this.inputs.includes(g) && !this.outputs.includes(g)) {
+				g.remove();
+			}
+		});
+	}
+
 	clear() {
 		this.gates.forEach(g => g.remove());
 		this.wires.forEach(w => w.remove());

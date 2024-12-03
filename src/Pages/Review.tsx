@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {Grid} from "@mui/material";
 import {CustomTypography} from "../Components/CustomTypography";
 import {SamaggiButton} from "../Components/SamaggiButton";
@@ -6,7 +6,7 @@ import levels from "../levels/LevelInterfaces";
 import {useLocation} from "react-router-dom";
 import {SolutionContext} from "../Main";
 import {useTypedNavigate} from "./Pages";
-
+import userData from "../UserData";
 
 export interface ReviewState {
     levelIndex: number;
@@ -20,6 +20,12 @@ export const Review: React.FC = (_) => {
 
     const [solution, ] = useContext(SolutionContext);
     const level = levels[state.worldIndex].levels[state.levelIndex];
+
+    let stars = "";
+    level.starRequirements.forEach((starReq) => {
+        stars += starReq.f(solution, state.timeElapsed) ? "S" : "N";
+        userData.setAttempt(level.levelID, "stars", stars);
+    }); 
 
     return <>
         <Grid container direction="column" spacing={2}>
