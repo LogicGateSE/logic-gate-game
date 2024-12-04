@@ -90,7 +90,7 @@ export default function Play(_) {
   }, [location]);
 
   React.useEffect(() => {
-    if (oracles.length > 0) {
+    if (oracles?.length > 0) {
       let temp = oracles.shift();
       setCurrentOracle(temp);
     }

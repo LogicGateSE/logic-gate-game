@@ -34,6 +34,8 @@ export default class LevelLatch implements LevelData {
     'display': 'block'
   }
 
+  readonly oracles = [];
+
   readonly levelTask: React.FC<React.PropsWithChildren> = ({ children }) => (
     <div>
       <p>

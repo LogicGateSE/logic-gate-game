@@ -30,6 +30,8 @@ export default class LevelSmartHome3 implements LevelData {
   readonly outputs: Array<string> = ["OUT"];
   readonly starRequirements: Array<StarRequirement>;
 
+  readonly oracles = [];
+
   constructor() {
     this.starRequirements = [
       { f: this.starOne, description: "Correct Solution" },

@@ -75,11 +75,14 @@ let levels: Array<LevelCollection> = [
         ]
     },
     {
-        name: "smart_home", levels: [
+        name: "Smart Home", levels: [
             new LevelSmartHome1,
             new LevelSmartHome2,
             new LevelSmartHome3
         ]
+    },
+    {
+        name: "Temple of Julian", levels: []
     },
     {
         name: "others", levels: [
