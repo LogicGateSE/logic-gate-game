@@ -26,7 +26,7 @@ const LevelSelect: React.FC = (_) => {
                     <Grid item>
                         <SamaggiButton fullWidth onClick={() => {
                             navigate("/play", {state: {worldIndex: state.worldIndex, levelIndex: index}})}
-                        }> {level.levelID}: {level.levelName} {userData.hasAttempted(level.levelID)? "*":""} {userData.getAttempt(level.levelID, "stars")||""}</SamaggiButton>
+                        }> {level.levelID}: {level.levelName} {userData.hasAttempted(level.levelID)? "(Attempted)":""} {userData.getAttempt(level.levelID, "stars")||""}</SamaggiButton>
                     </Grid>
                 ))}
             </Grid>

@@ -11,6 +11,8 @@ import userData from "../UserData";
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 
+import LogicGateComponent from "../Components/LogicGateComponent";
+
 export interface ReviewState {
     levelIndex: number;
     worldIndex: number;
@@ -24,8 +26,15 @@ export const Review: React.FC = (_) => {
     const [solution, ] = useContext(SolutionContext);
     const level = levels[state.worldIndex].levels[state.levelIndex];
 
+    const logicGateCompPreview = React.createRef<LogicGateComponent>();
     
     useEffect(() => {
+        let user_attempt = userData.getAttempt(level.levelID, "canvas");
+        let logicCanvas = logicGateCompPreview.current.logicCanvas;
+        if(user_attempt){
+            logicCanvas.load(user_attempt);
+            logicCanvas.showWireFrame();
+        }
         console.log("Solution: ", solution);
         console.log("Level: ", level);
         if (solution === undefined) {
@@ -34,9 +43,9 @@ export const Review: React.FC = (_) => {
         }else{
             let stars = "";
             level.starRequirements.forEach((starReq) => {
-                stars += starReq.f(solution, state.timeElapsed) ? "S" : "N";
-                userData.setAttempt(level.levelID, "stars", stars);
+                stars += starReq.f(logicCanvas.world, state.timeElapsed) ? "*" : "/";
             }); 
+            userData.setAttempt(level.levelID, "stars", stars);
         }
     }, []);
 
@@ -50,12 +59,15 @@ export const Review: React.FC = (_) => {
                 <Grid item>
                     <CustomTypography center>{level.levelName}</CustomTypography>
                 </Grid>
+                <Grid item sx={{width: "100%"}} justifyContent="center" alignItems="center">
+                    <LogicGateComponent ref={logicGateCompPreview}></LogicGateComponent>
+                </Grid>
             </Grid>
             {level.levelComplete(solution) && <Grid item container direction={"row"} spacing={4}>
                 {level.starRequirements.map((starReq) => (
                     <Grid item container direction={"column"} spacing={2} xs={Math.floor(12/level.starRequirements.length)}>
                         <Grid item>
-                            <CustomTypography large bold style={{paddingLeft: "auto", paddingRight: "auto"}}>
+                            <CustomTypography large bold style={{marginLeft: "auto", marginRight: "auto"}}>
                                 {starReq.f(solution, state.timeElapsed) ? <StarIcon fontSize="large"/> : <StarOutlineIcon fontSize="large"/>}
                             </CustomTypography>
                         </Grid>
