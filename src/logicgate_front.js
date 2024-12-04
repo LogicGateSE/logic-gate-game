@@ -99,6 +99,10 @@ class LogicCanvas {
 		}
 		this.domElement.addEventListener("mousemove", this.onMouseMove, true);
 
+		this.canvas.addEventListener("contextmenu", (event) => {
+			console.log(JSON.stringify(this.export()));
+		});
+
 		// this.canvas.addEventListener("click", () => {
 		//   this.world.clearSelction();
 		//   this.showConnectableTerminals();

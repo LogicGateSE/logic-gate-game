@@ -60,6 +60,7 @@ export interface LevelData {
 
     readonly LevelTask: React.FC<PropsWithChildren>;
     readonly TruthTable: (() => Array<TruthTableRow>);
+    oracles?: Array<Object>
 }
 
 type LevelCollection = {name: string, levels: Array<LevelData>}
