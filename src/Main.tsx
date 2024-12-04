@@ -11,6 +11,7 @@ import LevelSelect from "./Pages/LevelSelect";
 import {Review} from "./Pages/Review";
 import Play from "./Pages/Play";
 import Solution from "./logicgate_back";
+import Tutorial from "./Pages/Tutorial";
 
 export interface BasicProps {
     mobile: boolean,
@@ -48,6 +49,7 @@ export const Main: React.FC<PropsWithChildren<any>> = () => {
                             <Route path='/level-select' element={<LevelSelect/>}></Route>
                             <Route path='/review' element={<SolutionContext.Provider value={contextState}><Review/></SolutionContext.Provider>}></Route>
                             <Route path='/play' element={<SolutionContext.Provider value={contextState}><Play/></SolutionContext.Provider>}></Route>
+                            <Route path='/tutorial' element={<Tutorial/>}></Route>
                             <Route path='/' element={<Intro/>}></Route>
                         </Routes>
                     </SamaggiPaper>

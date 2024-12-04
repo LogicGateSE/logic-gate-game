@@ -14,9 +14,12 @@ const Intro: React.FC = (_)=> {
     return (
         <Grid container direction={"column"} spacing={4}>
             <Grid item>
-                <CustomTypography bold xlarge center>Logic Gate Game</CustomTypography>
+                <CustomTypography bold xlarge center>{"<NAME>"}</CustomTypography>
             </Grid>
             <Grid item container direction={"column"} spacing={2}>
+                <Grid item>
+                    <SamaggiButton fullWidth onClick={() => {navigate("/tutorial")}}>Tutorial</SamaggiButton>
+                </Grid>
                 <Grid item>
                     <SamaggiButton fullWidth onClick={() => {navigate("/world-select")}}>Start</SamaggiButton>
                 </Grid>

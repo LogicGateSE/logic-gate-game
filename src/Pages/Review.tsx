@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Grid} from "@mui/material";
 import {CustomTypography} from "../Components/CustomTypography";
 import {SamaggiButton} from "../Components/SamaggiButton";
@@ -7,6 +7,9 @@ import {useLocation} from "react-router-dom";
 import {SolutionContext} from "../Main";
 import {useTypedNavigate} from "./Pages";
 import userData from "../UserData";
+
+import StarIcon from '@mui/icons-material/Star';
+import StarOutlineIcon from '@mui/icons-material/StarOutline';
 
 export interface ReviewState {
     levelIndex: number;
@@ -21,11 +24,22 @@ export const Review: React.FC = (_) => {
     const [solution, ] = useContext(SolutionContext);
     const level = levels[state.worldIndex].levels[state.levelIndex];
 
-    let stars = "";
-    level.starRequirements.forEach((starReq) => {
-        stars += starReq.f(solution, state.timeElapsed) ? "S" : "N";
-        userData.setAttempt(level.levelID, "stars", stars);
-    }); 
+    
+    useEffect(() => {
+        console.log("Solution: ", solution);
+        console.log("Level: ", level);
+        if (solution === undefined) {
+            navigate("/level-select", {state: {worldIndex: state.worldIndex}});
+            console.error("Solution is undefined");
+        }else{
+            let stars = "";
+            level.starRequirements.forEach((starReq) => {
+                stars += starReq.f(solution, state.timeElapsed) ? "S" : "N";
+                userData.setAttempt(level.levelID, "stars", stars);
+            }); 
+        }
+    }, []);
+
 
     return <>
         <Grid container direction="column" spacing={2}>
@@ -41,8 +55,8 @@ export const Review: React.FC = (_) => {
                 {level.starRequirements.map((starReq) => (
                     <Grid item container direction={"column"} spacing={2} xs={Math.floor(12/level.starRequirements.length)}>
                         <Grid item>
-                            <CustomTypography large bold>
-                                {starReq.f(solution, state.timeElapsed) ? "S" : "N"}
+                            <CustomTypography large bold style={{paddingLeft: "auto", paddingRight: "auto"}}>
+                                {starReq.f(solution, state.timeElapsed) ? <StarIcon fontSize="large"/> : <StarOutlineIcon fontSize="large"/>}
                             </CustomTypography>
                         </Grid>
                         <Grid item>

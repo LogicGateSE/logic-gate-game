@@ -171,6 +171,7 @@ class LogicCanvas {
 
 			ctx.beginPath();
 			ctx.strokeStyle = wire.state === State.ON ? "white" : "black";
+			ctx.lineWidth = 2;
 
 			const drawCases = {
 				"self-connecting": () => {
