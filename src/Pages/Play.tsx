@@ -73,6 +73,14 @@ export default function Play(_) {
     let logicCanvas = logicGateComp.current.logicCanvas;
     let world = logicCanvas.world;
     world.clear();
+
+    inputs.forEach((input) => {
+      let gate = logicCanvas.createInput();
+  });
+  outputs.forEach((output) => {
+      let gate = logicCanvas.createOutput();
+  });
+
     renameIO(world);
 
     let userAttemptCanvas = userData.getAttempt(levelData.levelID, "canvas");
